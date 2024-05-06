@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("U")
+@RequestMapping("user")
 @RestController
 public class UserController {
 
@@ -15,7 +15,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    @GetMapping("G")
+    @GetMapping("all")
     public List<User> getUsers() {
         return this.userService.getUsers();
     }
@@ -30,6 +30,11 @@ public class UserController {
         this.userService.deleteUserById(id);
     }
 
+    @DeleteMapping("friendlist/"+"{id}")//doesnt work on postman for some reason, i might be sending the request wrong
+    public void deleteFromFriendList(@PathVariable long id, @RequestBody long id2) {
+        this.userService.deleteFromFriendsList(id, id2);
+    }
+
     @PostMapping()
     public User createUser(@RequestBody User user) {
         return this.userService.createUser(user);
@@ -39,5 +44,10 @@ public class UserController {
     @PutMapping("{id}")
     public User updateUser(@PathVariable long id, @RequestBody User user) {
         return this.userService.updateUser(id, user);
+    }
+
+   @PutMapping("friendlist/"+"{id}")
+    public User updateFriendlist(@PathVariable long id, @RequestBody User user) {
+        return this.userService.updateFriendlist(id, user);
     }
 }
