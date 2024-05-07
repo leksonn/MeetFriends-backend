@@ -35,7 +35,7 @@ public class UserController {
         this.userService.deleteFromFriendsList(id, id2);
     }
 
-    @PostMapping()
+    @PostMapping("add")
     public User createUser(@RequestBody User user) {
         return this.userService.createUser(user);
 
