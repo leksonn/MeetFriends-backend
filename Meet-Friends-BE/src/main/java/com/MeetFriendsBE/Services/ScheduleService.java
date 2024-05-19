@@ -1,5 +1,6 @@
-package com.MeetFriendsBE;
+package com.MeetFriendsBE.Services;
 
+import com.MeetFriendsBE.Models.Schedule;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;

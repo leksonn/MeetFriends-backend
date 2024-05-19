@@ -1,4 +1,4 @@
-package com.MeetFriendsBE;
+package com.MeetFriendsBE.Models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

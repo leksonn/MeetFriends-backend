@@ -1,4 +1,4 @@
-package com.MeetFriendsBE;
+package com.MeetFriendsBE.Models;
 
 
 import lombok.AllArgsConstructor;
@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User {
+
     private long id;
     private String Username;
     private String Password;

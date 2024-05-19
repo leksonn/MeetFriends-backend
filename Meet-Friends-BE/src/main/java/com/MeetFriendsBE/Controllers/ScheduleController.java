@@ -1,6 +1,8 @@
-package com.MeetFriendsBE;
+package com.MeetFriendsBE.Controllers;
 
 
+import com.MeetFriendsBE.Models.Schedule;
+import com.MeetFriendsBE.Services.ScheduleService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;

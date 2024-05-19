@@ -1,6 +1,7 @@
-package com.MeetFriendsBE;
+package com.MeetFriendsBE.Services;
 
 
+import com.MeetFriendsBE.Models.User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,11 +20,11 @@ public class UserService {
         this.users.add(new User(id++, "doot", "barin"));
     }
 
-    List<User> getUsers() {
+    public List<User> getUsers() {
         return this.users;
     }
 
-    User getUserById(Long id) {
+    public User getUserById(Long id) {
         for (User user : this.users) {
             if (user.getId() == id) {
                 return user;

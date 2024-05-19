@@ -1,6 +1,8 @@
-package com.MeetFriendsBE;
+package com.MeetFriendsBE.Controllers;
 
 
+import com.MeetFriendsBE.Models.User;
+import com.MeetFriendsBE.Services.UserService;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,8 +22,8 @@ public class UserController {
         return this.userService.getUsers();
     }
 
-    @GetMapping("{id}")
-    public User getUserById(@PathVariable long id) {
+    @GetMapping("login/"+"{id}")
+    public User getUserByIdd(@PathVariable long id) {
         return this.userService.getUserById(id);
     }
 
