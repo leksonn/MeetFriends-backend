@@ -2,45 +2,41 @@ package com.MeetFriendsBE.Controllers;
 
 import com.MeetFriendsBE.Models.Request;
 import com.MeetFriendsBE.Services.RequestService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-
-@RequestMapping("sentrequests")
 @RestController
+@RequestMapping("/api/requests")
 public class RequestController {
 
-    private final RequestService requestService;
+    @Autowired
+    private RequestService requestService;
 
-    public RequestController(RequestService requestService) {
-        this.requestService = requestService;
-    }
-
-    @GetMapping("all")
+    @GetMapping
     public List<Request> getRequests() {
-        return this.requestService.getRequests();
+        return requestService.getRequests();
     }
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public Request getRequestById(@PathVariable long id) {
-        return this.requestService.getRequestsById(id);
+        return requestService.getRequestById(id);
     }
 
-    @PostMapping("add")
+    @PostMapping
     public void createRequest(@RequestBody Request request) {
-        this.requestService.createRequest(request);
-
+        requestService.createRequest(request);
     }
 
-    @PutMapping("update")
-    public void updateRequest(@RequestBody Request request){
-        this.requestService.updateRequest(request);
+    @PutMapping
+    public void updateRequest(@RequestBody Request request) {
+        requestService.updateRequest(request);
     }
 
-    @DeleteMapping("{id}")
-    public void deleteRequest(@PathVariable long id){
-        this.requestService.deleteRequest(id);
+    @DeleteMapping("/{id}")
+    public void deleteRequest(@PathVariable long id) {
+        requestService.deleteRequest(id);
     }
-
 }
+
