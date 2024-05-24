@@ -1,39 +1,38 @@
 package com.MeetFriendsBE.Controllers;
 
-import com.MeetFriendsBE.Models.Streak;
+import com.MeetFriendsBE.DTOs.StreakDTO;
 import com.MeetFriendsBE.Services.StreakServices;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("streak")
 @RestController
+@RequestMapping("/api/streak")
 public class StreakController {
 
-    private final StreakServices streakServices;
+    @Autowired
+    private StreakServices streakServices;
 
-    public StreakController(StreakServices streakServices) {//a lot of this will be changed when the database is implemented
-        this.streakServices = streakServices;
+    @GetMapping("/all")
+    public List<StreakDTO> getStreaks() {
+        return streakServices.getStreaks();
     }
 
-
-    @GetMapping("all")
-    public List<Streak> getStreaks() {
-        return this.streakServices.getStreaks();
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteStreak(@PathVariable Long id) {
+        streakServices.deleteStreak(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("delete")
-    public void deleteStreak(@RequestBody String request) {
-        this.streakServices.deleteStreak(request);
+    @PostMapping("/add")
+    public StreakDTO createStreak(@RequestBody StreakDTO streakDTO) {
+        return streakServices.createStreak(streakDTO);
     }
 
-    @PostMapping("add")
-    public void createStreak(@RequestBody Streak streak) {
-        this.streakServices.createStreak(streak);
-    }
-
-    @PutMapping("update")
-    public void updateStreak(@RequestBody Streak streak) {
-        this.streakServices.updateStreak(streak);
+    @PutMapping("/update/{id}")
+    public StreakDTO updateStreak(@PathVariable Long id) {
+        return streakServices.updateStreak(id);
     }
 }
