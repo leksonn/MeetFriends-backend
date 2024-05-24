@@ -1,55 +1,62 @@
+// src/main/java/com/MeetFriendsBE/Controllers/UserController.java
 package com.MeetFriendsBE.Controllers;
 
-
+import com.MeetFriendsBE.DTOs.UserDTO;
 import com.MeetFriendsBE.Models.User;
 import com.MeetFriendsBE.Services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("user")
+@RequestMapping("/api/user")
 @RestController
 public class UserController {
 
-    private final UserService userService;
+    @Autowired
+    private UserService userService;
 
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
-
-    @GetMapping("all")
+    @GetMapping("/all")
     public List<User> getUsers() {
-        return this.userService.getUsers();
+        return userService.getUsers();
     }
 
-    @GetMapping("login/"+"{id}")
-    public User getUserByIdd(@PathVariable long id) {
-        return this.userService.getUserById(id);
+    @GetMapping("/login/{username}")
+    public UserDTO login(@PathVariable String username) {
+        User user = userService.findByUsername(username);
+        if (user == null) {
+            return null;
+        }
+        UserDTO userDTO = new UserDTO();
+        userDTO.setId(user.getId());
+        userDTO.setUsername(user.getUsername());
+        userDTO.setPassword(user.getPassword());
+        userDTO.setEmail(user.getEmail());
+        return userDTO;
     }
 
-    @DeleteMapping("{id}")
-    public void deleteUsers(@PathVariable long id) {
-        this.userService.deleteUserById(id);
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable long id) {
+        userService.deleteUserById(id);
     }
 
-    @DeleteMapping("friendlist/"+"{id}")//doesnt work on postman for some reason, i might be sending the request wrong
-    public void deleteFromFriendList(@PathVariable long id, @RequestBody long id2) {
-        this.userService.deleteFromFriendsList(id, id2);
-    }
-
-    @PostMapping("add")
+    @PostMapping("/add")
     public User createUser(@RequestBody User user) {
-        return this.userService.createUser(user);
-
+        return userService.createUser(user);
     }
 
-    @PutMapping("{id}")
+    @PutMapping("/{id}")
     public User updateUser(@PathVariable long id, @RequestBody User user) {
-        return this.userService.updateUser(id, user);
+        return userService.updateUser(id, user);
     }
 
-   @PutMapping("friendlist/"+"{id}")
-    public User updateFriendlist(@PathVariable long id, @RequestBody User user) {
-        return this.userService.updateFriendlist(id, user);
+    @PutMapping("/{userId}/addFriend/{friendId}")
+    public User addToFriendsList(@PathVariable long userId, @PathVariable long friendId) {
+        return userService.addToFriendsList(userId, friendId);
+    }
+
+    @PutMapping("/{userId}/removeFriend/{friendId}")
+    public User removeFromFriendsList(@PathVariable long userId, @PathVariable long friendId) {
+        return userService.removeFromFriendsList(userId, friendId);
     }
 }
