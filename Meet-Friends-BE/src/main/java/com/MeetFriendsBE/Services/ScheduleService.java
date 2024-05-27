@@ -1,62 +1,65 @@
 package com.MeetFriendsBE.Services;
 
+import com.MeetFriendsBE.DTOs.ScheduleDTO;
 import com.MeetFriendsBE.Models.Schedule;
+import com.MeetFriendsBE.repositories.ScheduleRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
 
-    private List<Schedule> schedulelist = new ArrayList<>();
-    private long id = 0;
+    @Autowired
+    private ScheduleRepository scheduleRepository;
 
-    public ScheduleService() {
-        this.schedulelist.add(new Schedule(id++, LocalDateTime.of(2024, 5, 1, 12, 0), true));
-        this.schedulelist.add(new Schedule(id++, LocalDateTime.of(2024, 5, 3, 19, 0), true));
-        this.schedulelist.add(new Schedule(id++, LocalDateTime.of(2024, 5, 4, 16, 15), true));
+    public List<ScheduleDTO> getSchedules() {
+        return scheduleRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
     }
 
-    public List<Schedule> getSchedules() {
-        return this.schedulelist;
+    public List<ScheduleDTO> getUserSchedules(long id) {
+        return scheduleRepository.findAll().stream()
+                .filter(schedule -> schedule.getUserId() == id)
+                .map(this::convertToDTO)
+                .collect(Collectors.toList());
     }
 
-    public List<Schedule> getUserSchedules(long id) {
-        List<Schedule> singleUserSchedules = new ArrayList<>();
-        for (Schedule schedule : this.schedulelist) {
-            if (schedule.getUserId() == id) {
-                singleUserSchedules.add(schedule);
-            }
-        }
-        return singleUserSchedules;
+    public void deleteSchedule(long id) {
+        scheduleRepository.deleteById(id);
     }
 
-    public void deleteSchedule(Schedule scheduleToDelete) {
-        for (Schedule schedule : this.schedulelist) {
-            if (schedule == scheduleToDelete) {
-                this.schedulelist.remove(schedule);
-            }
-        }
+    public ScheduleDTO addSchedule(ScheduleDTO newScheduleDTO) {
+        Schedule newSchedule = convertToEntity(newScheduleDTO);
+        Schedule savedSchedule = scheduleRepository.save(newSchedule);
+        return convertToDTO(savedSchedule);
     }
 
-    public void addSchedule(Schedule newSchedule) {
-        for (Schedule schedule : this.schedulelist) {
-            if (!((schedule.getUserId() == newSchedule.getUserId()) && (schedule.getScheduleTime() == newSchedule.getScheduleTime()))) {
-                this.schedulelist.add(schedule);
-            }
-        }
+    public ScheduleDTO updateSchedule(ScheduleDTO updateDTO) {
+        Optional<Schedule> current = scheduleRepository.findById(updateDTO.getUserId());
+        if (!current.isPresent()) return null;
+        Schedule existingSchedule = current.get();
+        existingSchedule.setScheduleTime(updateDTO.getScheduleTime());
+        existingSchedule.setFilled(updateDTO.isFilled());
+        Schedule updatedSchedule = scheduleRepository.save(existingSchedule);
+        return convertToDTO(updatedSchedule);
     }
 
-    public Schedule updateSchedule(Schedule update) {
-        for (Schedule schedule : this.schedulelist) {
-            if ((schedule.getScheduleTime() == update.getScheduleTime()) && (schedule.getUserId() == update.getUserId())) {
-                this.schedulelist.get((int) schedule.getUserId()).setFilled(update.isFilled());
-                return schedule;
-            }
-        }
-        return null;
+    private ScheduleDTO convertToDTO(Schedule schedule) {
+        ScheduleDTO scheduleDTO = new ScheduleDTO();
+        scheduleDTO.setUserId(schedule.getUserId());
+        scheduleDTO.setScheduleTime(schedule.getScheduleTime());
+        scheduleDTO.setFilled(schedule.isFilled());
+        return scheduleDTO;
     }
 
+    private Schedule convertToEntity(ScheduleDTO scheduleDTO) {
+        Schedule schedule = new Schedule();
+        schedule.setUserId(scheduleDTO.getUserId());
+        schedule.setScheduleTime(scheduleDTO.getScheduleTime());
+        schedule.setFilled(scheduleDTO.isFilled());
+        return schedule;
+    }
 }

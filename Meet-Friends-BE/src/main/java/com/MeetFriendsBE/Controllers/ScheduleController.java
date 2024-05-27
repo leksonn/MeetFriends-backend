@@ -1,47 +1,44 @@
 package com.MeetFriendsBE.Controllers;
 
-
-import com.MeetFriendsBE.Models.Schedule;
+import com.MeetFriendsBE.DTOs.ScheduleDTO;
 import com.MeetFriendsBE.Services.ScheduleService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("schedule")
 @RestController
+@RequestMapping("/api/schedule")
 public class ScheduleController {
 
-    private final ScheduleService scheduleService;
+    @Autowired
+    private ScheduleService scheduleService;
 
-    public ScheduleController(ScheduleService scheduleService) {
-        this.scheduleService = scheduleService;
+    @GetMapping("/all")
+    public List<ScheduleDTO> getSchedules() {
+        return scheduleService.getSchedules();
     }
 
-    @GetMapping("all")
-    public List<Schedule> getSchedules() {
-        return this.scheduleService.getSchedules();
+    @GetMapping("/{id}")
+    public List<ScheduleDTO> getUserSchedules(@PathVariable long id) {
+        return scheduleService.getUserSchedules(id);
     }
 
-
-    @GetMapping("{id}")
-    public List<Schedule> getUserSchedules(@PathVariable long id) {
-        return this.scheduleService.getUserSchedules(id);
+    @DeleteMapping("/delete/{id}")
+    public ResponseEntity<Void> deleteSchedule(@PathVariable long id) {
+        scheduleService.deleteSchedule(id);
+        return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("delete")
-    public void deleteUsers(@RequestBody Schedule schedule) {
-        this.scheduleService.deleteSchedule(schedule);
+    @PostMapping("/add")
+    public ScheduleDTO addSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        return scheduleService.addSchedule(scheduleDTO);
     }
 
-    @PostMapping("add")
-    public void createUser(@RequestBody Schedule schedule) {
-        this.scheduleService.addSchedule(schedule);
+    @PutMapping("/update")
+    public ScheduleDTO updateSchedule(@RequestBody ScheduleDTO scheduleDTO) {
+        return scheduleService.updateSchedule(scheduleDTO);
     }
-
-    @PutMapping("update")
-    public Schedule updateUser(@RequestBody Schedule schedule) {
-        return this.scheduleService.updateSchedule(schedule);
-    }
-
 }
 
