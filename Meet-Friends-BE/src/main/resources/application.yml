@@ -12,6 +12,11 @@ spring:
   data:
     jpa:
       repositories.enabled: true
+jwt:
+  secret: v3QIv4OqTx+0NStLvJzQfGp8VbD1F5m5Rg4fGYO1oFgKg6Rs2fzjShFyF+YZWbbBjo6Zo3Hgx8+KzH6q4s4NZw==
+
+
+
 
 frontend:
   url: ${FRONTEND_API_URL:http://localhost:4200}

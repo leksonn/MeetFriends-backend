@@ -1,13 +1,10 @@
 package com.MeetFriendsBE.Models;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Table;
+
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.data.annotation.Id;
 
 @Getter
 @Setter
@@ -18,20 +15,24 @@ import org.springframework.data.annotation.Id;
 public class Request {
 
     @jakarta.persistence.Id
-    @Id
-    @GeneratedValue
-    private long id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
     @Column
     private String sender;
 
-    @Column//this will probably be changed to user once implemented into main
+    @Column
     private String receiver;
 
     @Column
     private String details;
 
     @Column
-    private String meetup_time;
+    private String meetupTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
 
 }

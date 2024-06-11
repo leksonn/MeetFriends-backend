@@ -2,13 +2,14 @@ package com.MeetFriendsBE.Services;
 
 import com.MeetFriendsBE.DTOs.ScheduleDTO;
 import com.MeetFriendsBE.Models.Schedule;
+import com.MeetFriendsBE.Models.User;
 import com.MeetFriendsBE.repositories.ScheduleRepository;
+import com.MeetFriendsBE.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class ScheduleService {
@@ -16,50 +17,34 @@ public class ScheduleService {
     @Autowired
     private ScheduleRepository scheduleRepository;
 
-    public List<ScheduleDTO> getSchedules() {
-        return scheduleRepository.findAll().stream().map(this::convertToDTO).collect(Collectors.toList());
+    @Autowired
+    private UserRepository userRepository;
+
+    public List<Schedule> getAllSchedules(Long userId) {
+        return scheduleRepository.findByUserId(userId);
     }
 
-    public List<ScheduleDTO> getUserSchedules(long id) {
-        return scheduleRepository.findAll().stream()
-                .filter(schedule -> schedule.getUserId() == id)
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
+    public Schedule getScheduleById(Long id) {
+        return scheduleRepository.findById(id).orElse(null);
     }
 
-    public void deleteSchedule(long id) {
-        scheduleRepository.deleteById(id);
-    }
-
-    public ScheduleDTO addSchedule(ScheduleDTO newScheduleDTO) {
-        Schedule newSchedule = convertToEntity(newScheduleDTO);
-        Schedule savedSchedule = scheduleRepository.save(newSchedule);
-        return convertToDTO(savedSchedule);
-    }
-
-    public ScheduleDTO updateSchedule(ScheduleDTO updateDTO) {
-        Optional<Schedule> current = scheduleRepository.findById(updateDTO.getUserId());
-        if (!current.isPresent()) return null;
-        Schedule existingSchedule = current.get();
-        existingSchedule.setScheduleTime(updateDTO.getScheduleTime());
-        existingSchedule.setFilled(updateDTO.isFilled());
-        Schedule updatedSchedule = scheduleRepository.save(existingSchedule);
-        return convertToDTO(updatedSchedule);
-    }
-
-    private ScheduleDTO convertToDTO(Schedule schedule) {
-        ScheduleDTO scheduleDTO = new ScheduleDTO();
-        scheduleDTO.setUserId(schedule.getUserId());
-        scheduleDTO.setScheduleTime(schedule.getScheduleTime());
-        scheduleDTO.setFilled(schedule.isFilled());
-        return scheduleDTO;
-    }
-
-    private Schedule convertToEntity(ScheduleDTO scheduleDTO) {
+    public Schedule createSchedule(ScheduleDTO scheduleDTO, String username) {
+        User user = userRepository.findByUsername(username);
         Schedule schedule = new Schedule();
-        schedule.setUserId(scheduleDTO.getUserId());
+        schedule.setUser(user);
         schedule.setScheduleTime(scheduleDTO.getScheduleTime());
-        schedule.setFilled(scheduleDTO.isFilled());
-        return schedule;
+        return scheduleRepository.save(schedule);
+    }
+
+    public Schedule updateSchedule(Long id, ScheduleDTO scheduleDTO) {
+        Optional<Schedule> scheduleOptional = scheduleRepository.findById(id);
+        if (!scheduleOptional.isPresent()) return null;
+        Schedule schedule = scheduleOptional.get();
+        schedule.setScheduleTime(scheduleDTO.getScheduleTime());
+        return scheduleRepository.save(schedule);
+    }
+
+    public void deleteSchedule(Long id) {
+        scheduleRepository.deleteById(id);
     }
 }

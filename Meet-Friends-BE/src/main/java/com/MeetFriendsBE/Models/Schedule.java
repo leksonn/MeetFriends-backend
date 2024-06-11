@@ -21,11 +21,20 @@ public class Schedule {
     private long id;
 
     @Column
-    private long userId; // this will be implemented better after all branches are connected on main
-
-    @Column
     private LocalDateTime scheduleTime;
 
     @Column
     private boolean isFilled;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 }
