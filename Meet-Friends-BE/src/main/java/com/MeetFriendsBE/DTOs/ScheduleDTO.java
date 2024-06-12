@@ -10,5 +10,5 @@ import java.time.LocalDateTime;
 public class ScheduleDTO {
     private long userId;
     private LocalDateTime scheduleTime;   //this comment has been added so that i could merge my branch properly
-    private boolean isFilled;
+    private boolean isFilled;   //another merging comment
 }
