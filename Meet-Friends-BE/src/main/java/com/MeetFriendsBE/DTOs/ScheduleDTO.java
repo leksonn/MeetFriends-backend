@@ -9,6 +9,6 @@ import java.time.LocalDateTime;
 @Setter
 public class ScheduleDTO {
     private long userId;
-    private LocalDateTime scheduleTime;
+    private LocalDateTime scheduleTime;   //this comment has been added so that i could merge my branch properly
     private boolean isFilled;
 }
